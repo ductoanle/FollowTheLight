@@ -1,8 +1,11 @@
 FollowTheLight::Application.routes.draw do
+  resources :users
+  
   get "users/new"
+  get "users/show"
+  match "pages/home"
 
   match "/signup", :to => "users#new"
-  match "/home", :to => "pages#home"
   root :to => "pages#home"
 
   # The priority is based upon order of creation:
