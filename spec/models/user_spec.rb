@@ -93,7 +93,6 @@ describe User do
     end
 
     it "should not be empty" do
-      p @user
       @user.encrypted_password.should_not be_blank
     end
   end
@@ -103,8 +102,42 @@ describe User do
       @user = User.create!(@attr)
     end
     it "encrypted password must match with submitted password to create user successfully" do
-      @user.has_password?(@attr[:password]).should_be true
-      @user.has_password?("invalid_password").should_be false
+      @user.has_password?(@attr[:password]).should be_true
+      @user.has_password?("invalid_password").should be_false
+    end
+  end
+
+  describe "authenticate users" do
+    before(:each) do
+      @user = Factory(:user)
+    end
+
+    it "authentication should return false for invalid user" do
+      invalid_user = @user
+      invalid_user.email = "invalid_user@gmail.com"
+      User.authenticate(invalid_user.email, invalid_user.password).should be_nil
+      invalid_user = @user
+      invalid_user.password = "wrong_password"
+      User.authenticate(invalid_user.email, invalid_user.password).should be_nil
+    end
+
+    it "authentication should return true for valid user" do
+      valid_user = @user
+      User.authenticate(valid_user.email, valid_user.password).should == @user
+    end
+
+    it "authentication with salt should return false for invalid user" do
+      invalid_user = @user
+      invalid_user.id = "100000000000"
+      User.authenticate_with_salt(invalid_user.id, invalid_user.salt).should be_nil
+      invalid_user = @user
+      invalid_user.salt = "dasdsafdsgdsfgdsfgsdfg"
+      User.authenticate_with_salt(invalid_user.id, invalid_user.salt).should be_nil
+    end
+
+    it "authentication with salt should return true for valid user" do
+      valid_user = @user
+      User.authenticate_with_salt(valid_user.id, valid_user.salt).should == @user
     end
   end
 end

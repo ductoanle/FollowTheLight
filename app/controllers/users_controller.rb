@@ -17,11 +17,11 @@ class UsersController < ApplicationController
     if @user.save
       #Handle a successful save
       flash[:success] = "Welcome to the Sample Apps!"
+      sign_in(@user)
       redirect_to @user
     else
       @title = "Sign Up"
       render 'new'
     end
   end
-
 end
