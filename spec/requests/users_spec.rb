@@ -41,7 +41,6 @@ describe "Users" do
   end
 
   describe "sign in/out" do
-
     describe "failure" do
       it "should not sign a user in" do
         visit signin_path
@@ -59,8 +58,10 @@ describe "Users" do
         fill_in :email,    :with => user.email
         fill_in :password, :with => user.password
         click_button
+        p controller.signed_in?
         controller.should be_signed_in
         click_link "Sign out"
+        p controller.signed_in?
         controller.should_not be_signed_in
       end
     end
