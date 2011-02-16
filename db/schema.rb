@@ -10,7 +10,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110123124901) do
+ActiveRecord::Schema.define(:version => 20110214132953) do
+
+  create_table "images", :force => true do |t|
+    t.string   "name",       :limit => 100
+    t.string   "url"
+    t.string   "format",     :limit => 3
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "name"

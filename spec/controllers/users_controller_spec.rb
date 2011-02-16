@@ -90,4 +90,52 @@ describe UsersController do
       response.should have_selector("h1>img", :class =>"gravatar")
     end
   end
+
+  describe "edit user" do
+    before(:each) do
+      @user = Factory(:user)
+      test_sign_in(@user)
+    end
+
+    it "should be success" do
+      get :edit, :id=> @user
+      response.should be_success
+    end
+
+    it "should have the right title" do
+      get :edit, :id=> @user
+      response.should have_selector(:title, :content => "Edit User")
+    end
+
+    it "should have the username" do
+      get :edit, :id=>@user
+      response.should have_selector("#user_name", :value=> @user.name)
+    end
+
+    context "update user with new email" do
+      before(:each) do
+        @user.update_attribute(:email,"ethan.le@gmail.com")
+        put :update, :id => @user.id, :user => @user
+      end
+
+      it "should save the user with new email" do
+        User.find(@user.id).email.should == "ethan.le@gmail.com"
+      end
+
+      it "should redirect user to user page" do
+        response.should redirect_to(user_path(@user))
+      end
+
+      it "should display correct flash message" do
+        flash[:success] == "User had been updated successfully"
+      end
+
+      it "should display error message if fail to update" do
+        @user.update_attribute(:email, "ethan.le.gmail.com")
+        put :update, :id => @user, :user => @user
+        response.should render_template(edit_user_path(@user))
+        response.should have_selector("#error_explanation")
+      end
+    end
+  end
 end
