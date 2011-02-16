@@ -1,13 +1,12 @@
 FollowTheLight::Application.routes.draw do
 
   resources :users
+  resources :image, :only => [:index, :show, :new, :create, :destroy]
   resources :sessions, :only => [:new, :create, :destroy]
   match "/signin", :to => "sessions#new"
   match "/signout", :to => "sessions#destroy"
 
   get "sessions/destroy"
-  get "users/new"
-  get "users/show"
   match "pages/home"
 
   match "/signup", :to => "users#new"
